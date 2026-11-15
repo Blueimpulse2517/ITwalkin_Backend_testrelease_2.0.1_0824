@@ -15,7 +15,7 @@ var nodemailer = require('nodemailer');
 const fs = require('fs')
 const axios = require('axios');
 const bodyParser = require('body-parser');
-
+const sendWelcomeEmail = require("./welcomMail")
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -176,29 +176,8 @@ router.post("/Glogin", async (req, res) => {
             const user = await new EmpProfileModel({ email: email, name: name,  userId : userId, 
              isApproved:isApproved, ipAddress:ipAddress, Gpicture: Gpicture })
         const result = await user.save(user)                     
-var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'admin@itwalkin.com',
-      pass: 'hvzd mjnq yfxa eljs'
-    }
-  });
-  var mailOptions = {
-    from: 'admin@itwalkin.com',
-    to: result.email,
-    subject: `Successfully Registered with Itwalkin`,
-    html: '<p>Welcome to Itwalkin Job Portal</p>'+'<p>click <a href="http://www.itwalkin.in">itwalkin</a> to explore more </p>'
-  };
+         await sendWelcomeEmail(user, "IT Walkin will approve your account within 24 hours to start job posting")
 
-  transporter.sendMail(mailOptions,  function(error, info){
-    if (error) {
-    //   console.log(error);
-    //    res.send("could not send the mail")
-    } else {
-    //   console.log('Email sent: ' + info.response);
-    //    res.send(" mail sent succesfully")
-    }
-  });
   let gtoken = jwt.sign({id:result._id},secretKey)
             res.send({status : "success" ,token : gtoken ,id: result._id ,action:"registered"
                 })

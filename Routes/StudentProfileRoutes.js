@@ -14,6 +14,8 @@ const Archived= require("../Schema/ArchiveJobsAchema")
 const Deleted= require("../Schema/DeletedJobsSchema")
 const fs = require('fs')
 const mongoose = require("mongoose");
+const sendWelcomeEmail = require("./welcomMail")
+
 
 // Middleware
 function verifyToken(req, res, next) {
@@ -202,26 +204,8 @@ router.post("/Glogin", body('email').isEmail(), async (req, res) => {
         if (user == null) {
             const user = await new StudentProfileModel({ userId: userId, email: email, Gpicture: Gpicture, name: name, isApproved: isApproved, ipAddress: ipAddress})
             const result = await user.save(user)
+            await sendWelcomeEmail(user);
 
-            var transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: 'admin@itwalkin.comm',
-                    pass: 'hvzd mjnq yfxa eljs'
-                }
-            });
-            var mailOptions = {
-                from: 'admin@itwalkin.com',
-                to: result.email,
-                subject: `Successfully Registered with Itwalkin`,
-                html: '<p>Welcome to ITwalkin Job Portal</p>' + '<p>click <a href="http://www.itwalkin.com">itwalkin</a> to explore more </p>'
-            };
-
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                } else {
-                }
-            });
             let gtoken = jwt.sign({ id: result._id }, secretKey)
             res.send({ status: "success", token: gtoken, id: result._id , action:"registered"})
         } else {
