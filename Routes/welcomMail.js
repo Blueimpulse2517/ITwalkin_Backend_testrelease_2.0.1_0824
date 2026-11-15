@@ -275,7 +275,7 @@ async function sendWelcomeEmail(user, message) {
                                                                     >
 
                                                                         <a
-                                                                            href="https://www.itwalkin.com/"
+                                                                            href="https://www.itwalkin.in/"
                                                                             target="_blank"
                                                                             style="
                                                 display:inline-block;
@@ -390,9 +390,9 @@ async function sendWelcomeEmail(user, message) {
                             `;
 
         const { data, error } = await resend.emails.send({
-            from: "PakkaJob <noreply@pakkajob.in>",
+            from: "ITwalkin <info@itwalkin.in>",
             to: userEmail,
-            subject: "🎉 Welcome to It walkin – Your Account is Ready!",
+            subject: "🎉 Welcome to ITwalkin – Your Account is Ready!",
             html: htmlTemplate
 
         });
